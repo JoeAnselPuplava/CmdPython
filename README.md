@@ -1,6 +1,6 @@
 # Command Line Python Tool for PostGres
 
-A brief description of what this project does and who it's for.
+A command line tool that allows private queries on postgres databases
 
 ## Table of Contents
 
