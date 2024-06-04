@@ -13,8 +13,38 @@ A command line tool that allows private queries on postgres databases
 
 ## Installation
 
-Instructions on how to install and set up the project.
+How to install and set up the tool
 
 ```bash
 # Clone the repository
 git clone https://github.com/ZyphersWeb/CmdPython.git
+```
+
+## Use
+
+Ensure that you are in the directory displaying dpsql_tool, venv, and README.md
+
+Start a virtual Python environment based on your shell
+```bash
+|              Bash              |             Fish               |
+|--------------------------------|--------------------------------|
+| source venv/bin/activate       | source venv/bin/activate.fish  |
+```
+```bash
+# bash
+source venv/bin/activate
+```
+```bash
+# fish
+source venv/bin/activate.fish
+```
+
+Run dpsql with the query option
+```bash
+dpsql query "This is my query!"
+```
+
+Once you're done deactivate the virtual environment
+```bash
+deactivate
+```
