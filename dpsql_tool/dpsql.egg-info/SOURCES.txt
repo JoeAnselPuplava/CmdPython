@@ -1,4 +1,3 @@
-README
 setup.py
 dpsql/__init__.py
 dpsql/__main__.py
