@@ -25,11 +25,11 @@ git clone https://github.com/ZyphersWeb/CmdPython.git
 Ensure that you are in the directory displaying dpsql_tool, venv, and README.md
 
 Start a virtual Python environment based on your shell
-```bash
+
 |              Bash              |             Fish               |
 |--------------------------------|--------------------------------|
 | source venv/bin/activate       | source venv/bin/activate.fish  |
-```
+
 ```bash
 # bash
 source venv/bin/activate
