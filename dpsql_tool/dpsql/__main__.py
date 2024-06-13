@@ -54,7 +54,7 @@ def query(args):
     column_names = [desc[0] for desc in cursor.description]
 
     #Check if the query is an aggregate query
-    if(is_aggregate_query(args.query.lower())):
+    if(is_aggregate_query(args.query)):
         #Apply noise
         noisy_result = apply_differential_privacy(float(query_result), float(args.epsilon))
         print(f"Noisy: {noisy_result}")
@@ -87,7 +87,7 @@ def load_config():
 def is_aggregate_query(query):
     # List of supported aggregate functions
     aggregates = ['sum', 'avg', 'count', 'max', 'min']
-    return any(agg in query for agg in aggregates)
+    return any(agg in query.lower() for agg in aggregates)
 
 def apply_differential_privacy(query_result, epsilon):
     # Apply Laplace noise for differential privacy
