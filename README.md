@@ -5,11 +5,7 @@ A command line tool that allows private queries on postgres databases
 # Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+- [Use](#use)
 
 # Installation
 
