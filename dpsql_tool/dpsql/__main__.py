@@ -49,15 +49,20 @@ def query(args):
 
     #Fetch results
     query_result = cursor.fetchone()[0]
-    print(f"True: {query_result}")
+    # print(f"True: {query_result}")
+
     # Fetch column names from the cursor description
     column_names = [desc[0] for desc in cursor.description]
 
     #Check if the query is an aggregate query
     if(is_aggregate_query(args.query)):
+        if args.epsilon is None:
+            print("The --epsilon argument is required for this query.")
+            exit()
+        else:
         #Apply noise
-        noisy_result = apply_differential_privacy(float(query_result), float(args.epsilon))
-        print(f"Noisy: {noisy_result}")
+            noisy_result = apply_differential_privacy(float(query_result), float(args.epsilon))
+            print(f"Noisy: {noisy_result}")
     else:
         # Create a DataFrame from the fetched data
         df = pd.DataFrame(cursor.fetchall(), columns=column_names)
@@ -115,7 +120,7 @@ def main():
     # Query command
     parser_query = subparsers.add_parser('query',  help="Enter a query to search the database")
     parser_query.add_argument('query', type=str, help="The query to search the database")
-    parser_query.add_argument('epsilon', nargs='?', type=str, help="The epsilon for the query")
+    parser_query.add_argument('--epsilon', nargs='?', type=float, help="The epsilon for the query")
     parser_query.set_defaults(func=query)
 
     # Connect command

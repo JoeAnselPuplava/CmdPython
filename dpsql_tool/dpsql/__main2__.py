@@ -29,7 +29,7 @@ def main():
     
     # Capture all arguments to pass them directly to psql
     parser.add_argument('psql_args', nargs=argparse.REMAINDER, help="Arguments for psql command")
-    parser.add_argument('-epsilon', required=True, type=float, help="Privacy budget for the query")
+    parser.add_argument('-epsilon', required=False, type=float, help="Privacy budget for the query")
     
     psql_command = ""
 
@@ -59,10 +59,13 @@ def main():
 
     # Apply dp if the query is an aggregate
     if is_aggregate_query(query):
-        result_value = output_lines[2].strip()
-        query_result = float(result_value)
-        noisy_result = apply_differential_privacy(query_result, args.epsilon)
-        output_lines[2] = str(noisy_result)
+        if args.epsilon is None:
+            parser.error("The --epsilon argument is required for this query.")
+        else:
+            result_value = output_lines[2].strip()
+            query_result = float(result_value)
+            noisy_result = apply_differential_privacy(query_result, args.epsilon)
+            output_lines[2] = str(noisy_result)
 
     # Edit the first and last lines for help response
     if "--help" in unknown_args:
