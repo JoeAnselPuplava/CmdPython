@@ -9,11 +9,9 @@ try:
     import os
     import subprocess
     import numpy as np
-    # from opendp.trans import *
-    # from opendp.meas import *
     from opendp.mod import enable_features
-    from opendp.measurements import make_base_laplace, atom_domain, absolute_distance
     enable_features('contrib', 'honest-but-curious')
+    from opendp.measurements import make_base_laplace, atom_domain, absolute_distance
     # print("libraries imported")
 except ImportError as e:
     print(f"Error importing libraries: {e}")
@@ -51,24 +49,18 @@ def query(args):
 
     #Fetch results
     query_result = cursor.fetchone()[0]
-
+    print(f"True: {query_result}")
     # Fetch column names from the cursor description
     column_names = [desc[0] for desc in cursor.description]
 
-    #Apply noise
-    # print(is_aggregate_query(args.query.lower()))
-    # print(args.query)
-
+    #Check if the query is an aggregate query
     if(is_aggregate_query(args.query.lower())):
-        #Set epsilon
+        #Apply noise
         noisy_result = apply_differential_privacy(float(query_result), float(args.epsilon))
-        print(noisy_result)
-        # df = pd.DataFrame(noisy_result, columns=column_names)
-        # display(df)
+        print(f"Noisy: {noisy_result}")
     else:
         # Create a DataFrame from the fetched data
         df = pd.DataFrame(cursor.fetchall(), columns=column_names)
-        # return df
         display(df)
 
 # Saves the database details so that the program can 
