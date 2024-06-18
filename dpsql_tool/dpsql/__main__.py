@@ -9,6 +9,7 @@ from opendp.measurements import make_base_laplace, atom_domain, absolute_distanc
 
 def is_aggregate_query(query):
     # List of supported aggregate functions
+    print(query)
     aggregates = ['sum', 'avg', 'count', 'max', 'min']
     return any(agg in query.lower() for agg in aggregates)
 
@@ -43,6 +44,8 @@ def main():
     elif ("-c" in args.psql_args):
         query_index = args.psql_args.index('-c') + 1
         query = "".join(args.psql_args[query_index:])
+    else:
+        query = None
 
     # Prepare the psql command
     if unknown_args :
@@ -57,15 +60,19 @@ def main():
     # Split the output into lines
     output_lines = result.stdout.splitlines()
 
-    # Apply dp if the query is an aggregate
-    if is_aggregate_query(query):
-        if args.epsilon is None:
-            parser.error("The --epsilon argument is required for this query.")
+    # Check that the user is using a query
+    if query is not None:
+        # Apply dp if the query is an aggregate
+        if is_aggregate_query(query):
+            if args.epsilon is None:
+                parser.error("The --epsilon argument is required for this query.")
+            else:
+                result_value = output_lines[2].strip()
+                query_result = float(result_value)
+                noisy_result = apply_differential_privacy(query_result, args.epsilon)
+                output_lines[2] = str(noisy_result)
         else:
-            result_value = output_lines[2].strip()
-            query_result = float(result_value)
-            noisy_result = apply_differential_privacy(query_result, args.epsilon)
-            output_lines[2] = str(noisy_result)
+            parser.error("Non-aggregate queries are not allowed")
 
     # Edit the first and last lines for help response
     if "--help" in unknown_args:
