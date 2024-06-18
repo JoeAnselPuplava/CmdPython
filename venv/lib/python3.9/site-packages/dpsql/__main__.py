@@ -1,93 +1,11 @@
-#!/usr/bin/env python3
-try:
-    import argparse
-    import psycopg2
-    import psycopg2.extras
-    import pandas as pd
-    import json
-    from IPython.display import display
-    import os
-    import subprocess
-    import numpy as np
-    from opendp.mod import enable_features
-    enable_features('contrib', 'honest-but-curious')
-    from opendp.measurements import make_base_laplace, atom_domain, absolute_distance
-    # print("libraries imported")
-except ImportError as e:
-    print(f"Error importing libraries: {e}")
+import argparse
+import subprocess
+import os
+import sys
+from opendp.mod import enable_features
+enable_features('contrib', 'honest-but-curious')
+from opendp.measurements import make_base_laplace, atom_domain, absolute_distance
 
-global connection, cursor
-
-CONFIG_FILE = "db_config.json"
-
-#Function made in privateDS
-def postgres_DB(dbname, user, host, password):
-    try:
-        # Connect to the database
-        conn = psycopg2.connect(dbname=dbname, user=user, host=host, password=password)
-        try:
-            # Create a cursor
-            cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-            print("Connected to database, cursor defined")
-            save_config(dbname, user, host, password)
-            return conn, cur
-        except psycopg2.Error as e:
-            print(f"Error creating cursor: {e}")
-            # Close the connection in case of an error
-            conn.close()
-            return None, None      
-    except psycopg2.Error as e:
-        print(f"Error connecting to database: {e}")
-        return None, None
-
-def query(args):
-    config = load_config()
-    _, cursor = postgres_DB(config["dbname"], config["user"], config["hostname"], config["password"])
-
-    # Execute query
-    cursor.execute(args.query)
-
-    #Fetch results
-    query_result = cursor.fetchone()[0]
-    # print(f"True: {query_result}")
-
-    # Fetch column names from the cursor description
-    column_names = [desc[0] for desc in cursor.description]
-
-    #Check if the query is an aggregate query
-    if(is_aggregate_query(args.query)):
-        if args.epsilon is None:
-            print("The --epsilon argument is required for this query.")
-            exit()
-        else:
-        #Apply noise
-            noisy_result = apply_differential_privacy(float(query_result), float(args.epsilon))
-            print(f"Noisy: {noisy_result}")
-    else:
-        # Create a DataFrame from the fetched data
-        df = pd.DataFrame(cursor.fetchall(), columns=column_names)
-        display(df)
-
-# Saves the database details so that the program can 
-# connect to the database without prompting user for all the information
-def save_config(dbname, user, host, password):
-    config = {
-        "hostname": host,
-        "dbname": dbname,
-        "user": user,
-        "password": password,
-    }
-    with open(CONFIG_FILE, "w") as file:
-        json.dump(config, file)
-
-# Loads the previously saved information about the database
-def load_config():
-    try:
-        with open(CONFIG_FILE, "r") as file:
-            config = json.load(file)
-        return config
-    except FileNotFoundError:
-        return None
 
 def is_aggregate_query(query):
     # List of supported aggregate functions
@@ -102,50 +20,73 @@ def apply_differential_privacy(query_result, epsilon):
         absolute_distance(T=float),
         scale=scale)
     noisy_result = base_laplace(query_result)
+    if noisy_result < 0: 
+        noisy_result*=-1
     return noisy_result
 
-def connDB(args):
-    print(f"DBName: {args.dbname}")
-    print(f"Username: {args.user}")
-    print(f"Hostname: {args.hostname}")
-    print(f"Password: {args.password}")
-    postgres_DB(f"{args.dbname}", f"{args.user}", f"{args.hostname}", f"{args.password}")
-
 def main():
-    parser = argparse.ArgumentParser(description="A command line tool to query PostGres databases")
+    parser = argparse.ArgumentParser(description="Wrapper for the psql command", add_help=False)
     
-    # Create subparsers for subcommands
-    subparsers = parser.add_subparsers()
-
-    # Query command
-    parser_query = subparsers.add_parser('query',  help="Enter a query to search the database")
-    parser_query.add_argument('query', type=str, help="The query to search the database")
-    parser_query.add_argument('--epsilon', nargs='?', type=float, help="The epsilon for the query")
-    parser_query.set_defaults(func=query)
-
-    # Connect command
-    # Use defaults from config file if available
-    config = load_config()
-    def_dbname   = config["dbname"]   if config else "my_database"
-    def_user     = config["user"]     if config else "my_user"
-    def_hostname = config["hostname"] if config else "localhost"
-    def_password = config["password"] if config else "my_password"
-
-    parser_query = subparsers.add_parser('connect',  help="Enter a query to search the database")
-    parser_query.add_argument('dbname',   nargs='?', type=str, default=def_dbname,   help="The name of the postgres database")
-    parser_query.add_argument('user',     nargs='?', type=str, default=def_user,     help="The username to connect to postgres database")
-    parser_query.add_argument('hostname', nargs='?', type=str, default=def_hostname, help="The hostname to connect to postgres database")
-    parser_query.add_argument('password', nargs='?', type=str, default=def_password, help="The password to connect to postgres database")
-    parser_query.set_defaults(func=connDB)
+    # Capture all arguments to pass them directly to psql
+    parser.add_argument('psql_args', nargs=argparse.REMAINDER, help="Arguments for psql command")
+    parser.add_argument('-epsilon', required=False, type=float, help="Privacy budget for the query")
     
-    # Parse arguments and call appropriate function
-    args = parser.parse_args()
+    psql_command = ""
 
-    if hasattr(args, 'func'):
-        args.func(args)
+    # Parse the arguments and handle the --help option
+    args, unknown_args = parser.parse_known_args()
+
+    # Extract SQL query from arguments
+    query = ""
+    if ("-c" in unknown_args):
+        query = "".join(args.psql_args[0])
+    elif ("-c" in args.psql_args):
+        query_index = args.psql_args.index('-c') + 1
+        query = "".join(args.psql_args[query_index:])
+
+    # Prepare the psql command
+    if unknown_args :
+        psql_command = ['psql'] + unknown_args + args.psql_args
     else:
-        parser.print_help()
+        psql_command = ['psql'] + args.psql_args
+    
+
+    # Run the psql command
+    result = subprocess.run(psql_command, capture_output=True, text=True)
+
+    # Split the output into lines
+    output_lines = result.stdout.splitlines()
+
+    # Apply dp if the query is an aggregate
+    if is_aggregate_query(query):
+        if args.epsilon is None:
+            parser.error("The --epsilon argument is required for this query.")
+        else:
+            result_value = output_lines[2].strip()
+            query_result = float(result_value)
+            noisy_result = apply_differential_privacy(query_result, args.epsilon)
+            output_lines[2] = str(noisy_result)
+
+    # Edit the first and last lines for help response
+    if "--help" in unknown_args:
+        output_lines[0] = "Wrapper for the psql command"
+        output_lines[-2] = ""
+        output_lines[-1] = ""
+
+    # Join the modified lines back together
+    modified_output = "\n".join(output_lines)
+    
+    # Print the modified output and errors to the console
+    if modified_output:
+        print(modified_output)
+    if result.stderr:
+        print(result.stderr, file=sys.stderr)
+    
+    # Exit with the same return code as the psql command
+    sys.exit(result.returncode)
 
 if __name__ == "__main__":
     main()
+
+
 

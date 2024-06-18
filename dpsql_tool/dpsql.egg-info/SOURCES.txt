@@ -1,6 +1,5 @@
 setup.py
 dpsql/__init__.py
-dpsql/__main2__.py
 dpsql/__main__.py
 dpsql.egg-info/PKG-INFO
 dpsql.egg-info/SOURCES.txt
