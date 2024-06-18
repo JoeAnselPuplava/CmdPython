@@ -6,8 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            # 'dpsql=dpsql.__main__:main',
-            'dpsql=dpsql.__main2__:main',
+            'dpsql=dpsql.__main__:main'
         ],
     },
 )
