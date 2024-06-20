@@ -5,14 +5,46 @@ import sys
 from opendp.mod import enable_features
 enable_features('contrib', 'honest-but-curious')
 from opendp.measurements import make_base_laplace, atom_domain, absolute_distance
+from pglast import parse_sql, ast, visitors
+from pprint import pprint
 
 
-def is_aggregate_query(query):
-    # List of supported aggregate functions
-    print(query)
-    aggregates = ['sum', 'avg', 'count', 'max', 'min']
-    return any(agg in query.lower() for agg in aggregates)
+def is_aggregate_query(node):
+    # List of aggregate querie names (add more as needed)
+    aggregate_queries = {'count', 'sum', 'avg', 'min', 'max'}
+    if node.funcname[0].sval in aggregate_queries:
+        print("True!")
+        return True
+    print("False!")
+    return False
 
+# function assumes its a basic sql query (no potential sub queries)
+def contains_aggregate_function(query):
+    # Make the ast tree for the query
+    root = parse_sql(query)
+    stmt = root[0]
+    sstmt = stmt.stmt
+    for node in sstmt.targetList:
+        subnode = traverse_targetList(node.val)
+        if subnode is not None:
+            return is_aggregate_query(subnode)
+    return False
+
+def traverse_targetList(node):
+    # pprint(node(skip_none=True))
+    if isinstance(node, ast.FuncCall):
+        return node
+    elif isinstance(node, ast.RowExpr):
+        return traverse_targetList(node.val)
+    return None
+
+
+# def apply_dp_count():
+#     #Code
+# def apply_dp_sum():
+#     #Code
+# def apply_dp_mean():
+#     #Code
 def apply_differential_privacy(query_result, epsilon):
     # Apply Laplace noise for differential privacy
     scale = 1.0 / epsilon
@@ -60,16 +92,19 @@ def main():
     # Split the output into lines
     output_lines = result.stdout.splitlines()
 
+    # Check that the user is using a query
     if query is not None:
         # Apply dp if the query is an aggregate
-        if is_aggregate_query(query):
+        if contains_aggregate_function(query):
             if args.epsilon is None:
                 parser.error("The --epsilon argument is required for this query.")
             else:
-                result_value = output_lines[2].strip()
-                query_result = float(result_value)
-                noisy_result = apply_differential_privacy(query_result, args.epsilon)
-                output_lines[2] = str(noisy_result)
+                print("It's an aggregate qurie!")
+                # result_value = output_lines[2].strip()
+                # query_result = float(result_value)
+                # noisy_result = apply_differential_privacy(query_result, args.epsilon)
+                # output_lines[2] = str(noisy_result)
+        # Reject non-aggregate queries
         else:
             parser.error("Non-aggregate queries are not allowed")
 
