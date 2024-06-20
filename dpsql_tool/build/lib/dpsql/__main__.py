@@ -5,17 +5,15 @@ import sys
 from opendp.mod import enable_features
 enable_features('contrib', 'honest-but-curious')
 from opendp.measurements import make_base_laplace, atom_domain, absolute_distance
-from pglast import parse_sql, ast, visitors
+from pglast import parse_sql, ast
 from pprint import pprint
 
 
 def is_aggregate_query(node):
     # List of aggregate querie names (add more as needed)
-    aggregate_queries = {'count', 'sum', 'avg', 'min', 'max'}
+    aggregate_queries = {'count', 'sum', 'avg'}
     if node.funcname[0].sval in aggregate_queries:
-        print("True!")
         return True
-    print("False!")
     return False
 
 # function assumes its a basic sql query (no potential sub queries)
@@ -35,7 +33,9 @@ def traverse_targetList(node):
     if isinstance(node, ast.FuncCall):
         return node
     elif isinstance(node, ast.RowExpr):
-        return traverse_targetList(node.val)
+        for nodes in node.args:
+            return traverse_targetList(nodes)
+        # return traverse_targetList(node.args)
     return None
 
 
@@ -99,7 +99,7 @@ def main():
             if args.epsilon is None:
                 parser.error("The --epsilon argument is required for this query.")
             else:
-                print("It's an aggregate qurie!")
+                print("It's an aggregate query!")
                 # result_value = output_lines[2].strip()
                 # query_result = float(result_value)
                 # noisy_result = apply_differential_privacy(query_result, args.epsilon)
