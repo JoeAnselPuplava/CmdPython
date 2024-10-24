@@ -1,0 +1,431 @@
+"":
+  "":
+    aka_name:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      person_id:
+        type: int
+        lower: 0
+        upper: 1000
+      name:
+        type: float
+        lower: 0
+        upper: 1000
+      imdb_index:
+        type: string
+      name_pcode_cf:
+        type: string
+      name_pcode_nf:
+        type: string
+      surname_pcode:
+        type: string
+      md5sum:
+        type: string
+    aka_title:
+      row_privacy: True
+      rows: 1000
+      episode_of_id:
+        type: int
+        lower: 0
+        upper: 1000
+      season_nr:
+        type: int
+        lower: 0
+        upper: 1000
+      episode_nr:
+        type: int
+        lower: 0
+        upper: 1000
+      kind_id:
+        type: int
+        lower: 0
+        upper: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      production_year:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      md5sum:
+        type: string
+      title:
+        type: float
+        lower: 0
+        upper: 1000
+      imdb_index:
+        type: string
+      phonetic_code:
+        type: string
+      note:
+        type: float
+        lower: 0
+        upper: 1000
+    cast_info:
+      row_privacy: True
+      rows: 1000
+      person_role_id:
+        type: int
+        lower: 0
+        upper: 1000
+      person_id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      role_id:
+        type: int
+        lower: 0
+        upper: 1000
+      nr_order:
+        type: int
+        lower: 0
+        upper: 1000
+      note:
+        type: float
+        lower: 0
+        upper: 1000
+    char_name:
+      row_privacy: True
+      rows: 1000
+      imdb_id:
+        type: int
+        lower: 0
+        upper: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      imdb_index:
+        type: string
+      md5sum:
+        type: string
+      name_pcode_nf:
+        type: string
+      surname_pcode:
+        type: string
+      name:
+        type: float
+        lower: 0
+        upper: 1000
+    comp_cast_type:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      kind:
+        type: string
+    company_name:
+      row_privacy: True
+      rows: 1000
+      imdb_id:
+        type: int
+        lower: 0
+        upper: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      country_code:
+        type: string
+      md5sum:
+        type: string
+      name_pcode_nf:
+        type: string
+      name_pcode_sf:
+        type: string
+      name:
+        type: float
+        lower: 0
+        upper: 1000
+    company_type:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      kind:
+        type: string
+    complete_cast:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      subject_id:
+        type: int
+        lower: 0
+        upper: 1000
+      status_id:
+        type: int
+        lower: 0
+        upper: 1000
+    info_type:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      info:
+        type: string
+    keyword:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      keyword:
+        type: float
+        lower: 0
+        upper: 1000
+      phonetic_code:
+        type: string
+    kind_type:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      kind:
+        type: string
+    link_type:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      link:
+        type: string
+    movie_companies:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      company_id:
+        type: int
+        lower: 0
+        upper: 1000
+      company_type_id:
+        type: int
+        lower: 0
+        upper: 1000
+      note:
+        type: float
+        lower: 0
+        upper: 1000
+    movie_info:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      info_type_id:
+        type: int
+        lower: 0
+        upper: 1000
+      info:
+        type: float
+        lower: 0
+        upper: 1000
+      note:
+        type: float
+        lower: 0
+        upper: 1000
+    movie_info_idx:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      info_type_id:
+        type: int
+        lower: 0
+        upper: 1000
+      info:
+        type: float
+        lower: 0
+        upper: 1000
+      note:
+        type: float
+        lower: 0
+        upper: 1000
+    movie_keyword:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      keyword_id:
+        type: int
+        lower: 0
+        upper: 1000
+    movie_link:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      linked_movie_id:
+        type: int
+        lower: 0
+        upper: 1000
+      link_type_id:
+        type: int
+        lower: 0
+        upper: 1000
+    name:
+      row_privacy: True
+      rows: 1000
+      imdb_id:
+        type: int
+        lower: 0
+        upper: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      imdb_index:
+        type: string
+      gender:
+        type: string
+      name_pcode_cf:
+        type: string
+      name_pcode_nf:
+        type: string
+      surname_pcode:
+        type: string
+      md5sum:
+        type: string
+      name:
+        type: float
+        lower: 0
+        upper: 1000
+    person_info:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      person_id:
+        type: int
+        lower: 0
+        upper: 1000
+      info_type_id:
+        type: int
+        lower: 0
+        upper: 1000
+      info:
+        type: float
+        lower: 0
+        upper: 1000
+      note:
+        type: float
+        lower: 0
+        upper: 1000
+    role_type:
+      row_privacy: True
+      rows: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      role:
+        type: string
+    title:
+      row_privacy: True
+      rows: 1000
+      episode_of_id:
+        type: int
+        lower: 0
+        upper: 1000
+      season_nr:
+        type: int
+        lower: 0
+        upper: 1000
+      episode_nr:
+        type: int
+        lower: 0
+        upper: 1000
+      production_year:
+        type: int
+        lower: 0
+        upper: 1000
+      id:
+        type: int
+        lower: 0
+        upper: 1000
+      imdb_id:
+        type: int
+        lower: 0
+        upper: 1000
+      kind_id:
+        type: int
+        lower: 0
+        upper: 1000
+      md5sum:
+        type: string
+      title:
+        type: float
+        lower: 0
+        upper: 1000
+      imdb_index:
+        type: string
+      phonetic_code:
+        type: string
+      series_years:
+        type: string

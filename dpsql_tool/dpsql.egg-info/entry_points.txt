@@ -1,2 +1,0 @@
-[console_scripts]
-dpsql = dpsql.__main__:main

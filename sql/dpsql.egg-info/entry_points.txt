@@ -1,0 +1,2 @@
+[console_scripts]
+dpsql = snsql.sql.__main__:main
